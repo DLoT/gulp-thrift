@@ -25,10 +25,10 @@ emptyTempFolder = ->
     console.error(error)
 
 ###*
- * @description  
+ * @description
  * streamifies file generation
  *
- * @param {Object} opts 
+ * @param {Object} opts
  * @param {String} opts.version           outputs compiler version
  * @param {Array} opts.I                  include in directories searched for included directives
  * @param {Boolean} opts.nowarn           suppress compiler warnings
@@ -39,6 +39,7 @@ emptyTempFolder = ->
  * @param {Boolean} opts.allow64bitConsts Don't print warnings about 64-bit constants
  * @param {String} opts.gen               The language to compile into
  * @param {String} opts.thriftPath        location of the thrift executable
+ * @param {String} opts.thriftExecutable  name of the thrift executable
  * @returns {Stream}                      A through stream
  *
  * @example
@@ -55,14 +56,16 @@ module.exports = gulpThrift = (opts = {}) ->
   processes = [];
 
   opts.thriftPath ||= "thrift"
+  opts.thriftExecutable ||= "thrift"
   opts.gen ||= "js"
   opts.out = tempFolder
+
 
   # compile thrift files into a temp directory
   writeFn = (file) ->
     processes.push new Promise (resolve, reject) =>
-      command = "thrift #{ createArgs(opts) } #{ file.path }"
-      if opts.versbose
+      command = "#{ opts.thriftExecutable } #{ createArgs(opts) } #{ file.path }"
+      if opts.verbose
         gutil.log("executing command", command)
       exec(command, resolve)
 
